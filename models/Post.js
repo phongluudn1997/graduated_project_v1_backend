@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const PostSchema = new Schema({
   type: {
     type: String,
-    enum: ["reading", "listening", "writing", "speaking", "podcast"],
+    enum: ["reading", "listening", "writing", "speaking"],
     required: true
   },
   title: {

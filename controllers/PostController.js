@@ -6,8 +6,8 @@ exports.uploadPost = async (req, res, next) => {
     title: req.body.title,
     body: req.body.body,
     postedBy: req.decoded.userId,
-    audio: req.files.audio ? req.files.audio[0].path : null,
-    image: req.files.image ? req.files.image[0].path : null
+    audio: req.files ? req.files.audio[0].path : null,
+    image: req.files ? req.files.image[0].path : null
   });
 
   newPost.save(err => {
@@ -43,6 +43,18 @@ exports.getPostsByType = (req, res, next) => {
       });
     }
   });
+};
+
+exports.getLatest = (req, res, next) => {
+  Post.findOne({ type: req.params.type.toLowerCase() })
+    .populate("postedBy")
+    .sort({ created_at: -1 })
+    .exec((err, doc) => {
+      if (err) next(err);
+      else {
+        return res.json({ doc });
+      }
+    });
 };
 
 exports.getPost = (req, res, next) => {

@@ -24,6 +24,7 @@ router.post(
 );
 // router.get("/", PostController.getPosts);
 router.get("/:type/", PostController.getPostsByType);
+router.get("/:type/latest", PostController.getLatest);
 router.get("/:type/:id", PostController.getPost);
 
 module.exports = router;
