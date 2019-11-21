@@ -21,16 +21,21 @@ exports.upload = (req, res, next) => {
   });
 };
 
-exports.getAll = (req, res, next) => {
-  Podcast.find((err, docs) => {
-    if (err) {
-      next(err);
-    } else {
-      res.status(200).json({
-        docs
-      });
-    }
-  });
+exports.getAll = async (req, res, next) => {
+  try {
+    let { pageSize, current } = req.query;
+    pageSize = parseInt(pageSize);
+    current = parseInt(current);
+    const foundPodcasts = await Podcast.find()
+      .skip(pageSize * (current - 1))
+      .limit(pageSize);
+    return res.json({
+      totalCount: foundPodcasts.length,
+      data: foundPodcasts
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // GET Podcast with specific type
