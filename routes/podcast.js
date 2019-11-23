@@ -15,7 +15,7 @@ var upload = multer({ storage: storage });
 
 router.post(
   "/",
-  checkToken,
+  // checkToken,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "audio", maxCount: 1 }

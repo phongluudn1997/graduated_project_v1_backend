@@ -5,10 +5,12 @@ exports.upload = (req, res, next) => {
     title: req.body.title,
     description: req.body.description,
     transcript: req.body.transcript,
-    postedBy: req.decoded.userId,
+    // postedBy: req.decoded.userId,
     audio: req.files.audio ? req.files.audio[0].path : null,
     image: req.files.image ? req.files.image[0].path : null
   });
+
+  console.log(req.body);
 
   newPost.save(err => {
     if (err) next(err);

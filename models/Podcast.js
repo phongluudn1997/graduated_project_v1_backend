@@ -12,9 +12,9 @@ const PodcastSchema = new Schema({
     type: String
   },
   postedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    type: mongoose.Schema.Types.ObjectId
+    // ref: "User",
+    // required: true
   },
   audio: {
     type: String
