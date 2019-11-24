@@ -17,7 +17,8 @@ const PodcastSchema = new Schema({
     // required: true
   },
   audio: {
-    type: String
+    type: String,
+    required: true
   },
   created_at: {
     type: Date,

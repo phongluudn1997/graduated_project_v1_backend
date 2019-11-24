@@ -25,14 +25,16 @@ exports.upload = (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    let { pageSize, current } = req.query;
-    pageSize = parseInt(pageSize);
-    current = parseInt(current);
-    const foundPodcasts = await Podcast.find()
-      .skip(pageSize * (current - 1))
-      .limit(pageSize);
+    // let { pageSize, current } = req.query;
+    // pageSize = parseInt(pageSize);
+    // current = parseInt(current);
+    // console.log(pageSize, current);
+    const foundPodcasts = await Podcast.find();
+    // .skip(pageSize * (current - 1))
+    // .limit(pageSize);
+    const totalCount = await Podcast.countDocuments();
     return res.json({
-      totalCount: foundPodcasts.length,
+      totalCount,
       data: foundPodcasts
     });
   } catch (err) {
@@ -62,5 +64,16 @@ exports.getOne = (req, res, next) => {
         doc
       });
     }
+  });
+};
+
+exports.deleteById = (req, res, next) => {
+  const { _id } = req.params;
+  Podcast.findByIdAndDelete(_id, (err, resp) => {
+    if (err) next(err);
+    else
+      res.json({
+        success: true
+      });
   });
 };
