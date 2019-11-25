@@ -72,8 +72,34 @@ exports.deleteById = (req, res, next) => {
   Podcast.findByIdAndDelete(_id, (err, resp) => {
     if (err) next(err);
     else
-      res.json({
-        success: true
+      res.status(200).json({
+        message: "Delete successfully"
       });
+  });
+};
+
+exports.updateOne = (req, res, next) => {
+  const { _id } = req.params;
+  console.log(_id);
+  // let newPost = new Podcast({
+  //   title: req.body.title,
+  //   description: req.body.description,
+  //   transcript: req.body.transcript,
+  //   //postedBy: req.decoded.userId,
+  //   audio: req.files.audio ? req.files.audio[0].path : null,
+  //   image: req.files.image ? req.files.image[0].path : null
+  // });
+  console.log(req.body);
+  let podcast = { ...req.body };
+  if (req.files.image) {
+    podcast = { ...podcast, image: req.files.image[0].path };
+  }
+  if (req.files.audio) {
+    podcast = { ...podcast, audio: req.files.audio[0].path };
+  }
+  console.log(podcast);
+  Podcast.findByIdAndUpdate(_id, podcast, (err, doc) => {
+    if (err) next(err);
+    return res.json({ message: "Successfully", doc });
   });
 };

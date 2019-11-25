@@ -15,7 +15,7 @@ var upload = multer({ storage: storage });
 
 router.post(
   "/",
-  checkToken,
+  // checkToken,
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "audio", maxCount: 1 }
@@ -26,6 +26,14 @@ router.post(
 router.get("/", PodcastController.getAll);
 router.get("/latest", PodcastController.getLatest);
 router.get("/:id", PodcastController.getOne);
+router.patch(
+  "/:_id",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "audio", maxCount: 1 }
+  ]),
+  PodcastController.updateOne
+);
 router.delete("/:_id", PodcastController.deleteById);
 
 module.exports = router;
