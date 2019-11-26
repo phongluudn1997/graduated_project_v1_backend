@@ -15,7 +15,7 @@ const User = new Schema({
     minlength: [6, "Password at least 6 words"]
   },
   roleId: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: mongoose.Schema.Types.ObjectId,
     ref: "Role"
   }
 });
