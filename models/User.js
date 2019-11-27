@@ -17,7 +17,11 @@ const User = new Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Role",
-    default: "5dde0a0f1a9feb4ec9be53d8"
+    default: mongoose.Types.ObjectId("5dde0a0f1a9feb4ec9be53d8")
+  },
+  active: {
+    type: Boolean,
+    default: true
   }
 });
 

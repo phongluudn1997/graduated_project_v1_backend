@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 const message = require("../constants/message");
 const jwt = require("jsonwebtoken");
 const jwt_constant = require("../constants/JWT");
+const mongoose = require("mongoose");
 
 exports.UserLogin = (req, res, next) => {
   User.findOne({ email: req.body.email }, (err, user) => {
@@ -16,21 +17,24 @@ exports.UserLogin = (req, res, next) => {
       } else {
         bcryptjs.compare(req.body.password, user.password, (err, success) => {
           if (err) next(err);
-          else {
-            if (!success) {
-              let err = new Error();
-              err.status = 404;
-              err.message = message.WRONG_PASSWORD;
-              next(err);
-            } else {
-              const token = jwt.sign(
-                { userId: user._id },
-                jwt_constant.JWT_SECRET_KEY
-              );
-              res.status(200).json({
-                token
-              });
-            }
+          else if (!success) {
+            let err = new Error();
+            err.status = 404;
+            err.message = message.WRONG_PASSWORD;
+            next(err);
+          } else if (!user.active) {
+            let err = new Error();
+            err.status = 404;
+            err.message = message.IN_ACTIVE;
+            next(err);
+          } else {
+            const token = jwt.sign(
+              { userId: user._id },
+              jwt_constant.JWT_SECRET_KEY
+            );
+            res.status(200).json({
+              token
+            });
           }
         });
       }
@@ -58,7 +62,9 @@ exports.UserRegister = (req, res, next) => {
             else {
               let newUser = new User({
                 email: req.body.email,
-                password: hash
+                password: hash,
+                name: req.body.name,
+                role: mongoose.Types.ObjectId(req.body.role)
               });
               newUser.save((err, newUser) => {
                 if (err) next(err);
@@ -111,4 +117,25 @@ exports.GetAllUsers = async (req, res, next) => {
   //     users: doc
   //   });
   // });
+};
+
+exports.ToggleActivateUser = async (req, res, next) => {
+  const { _id } = req.params;
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "Not Found"
+      });
+    } else {
+      user.active = !user.active;
+      const newUser = await user.save();
+      return res.status(200).json({
+        message: "Change successfully",
+        user: newUser
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
 };

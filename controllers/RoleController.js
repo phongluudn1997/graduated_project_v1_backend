@@ -13,3 +13,14 @@ exports.CreateRole = async (req, res, next) => {
     }
   });
 };
+
+exports.GetRoles = async (req, res, next) => {
+  try {
+    const roles = await Role.find();
+    return res.status(200).json({
+      roles
+    });
+  } catch (error) {
+    next(error);
+  }
+};
