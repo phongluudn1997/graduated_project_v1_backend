@@ -13,18 +13,11 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
-router.post(
-  "/",
-  checkToken,
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "audio", maxCount: 1 }
-  ]),
-  PostController.uploadPost
-);
-// router.get("/", PostController.getPosts);
+router.post("/", checkToken, upload.single("image"), PostController.uploadPost);
+router.get("/", PostController.getPosts);
 router.get("/:type/", PostController.getPostsByType);
 router.get("/:type/latest", PostController.getLatest);
-router.get("/:type/:id", PostController.getPost);
+router.get("/:id", PostController.getPost);
+router.delete("/:_id", PostController.deleteById);
 
 module.exports = router;

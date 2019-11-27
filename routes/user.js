@@ -4,5 +4,6 @@ const checkToken = require("../middlewares/checkToken");
 
 router.post("/login", UserController.UserLogin);
 router.post("/register", UserController.UserRegister);
+router.get("/", UserController.GetAllUsers);
 router.patch("/update", checkToken, UserController.UpdateUser);
 module.exports = router;

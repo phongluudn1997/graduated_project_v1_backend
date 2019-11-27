@@ -94,3 +94,21 @@ exports.UpdateUser = (req, res, next) => {
     )
     .catch(err => next(err));
 };
+
+exports.GetAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find().populate("role");
+    const totalCount = await User.countDocuments();
+    res.status(200).json({
+      totalCount,
+      users
+    });
+  } catch (error) {
+    next(error);
+  }
+  // User.find().then(doc => {
+  //   res.status(200).json({
+  //     users: doc
+  //   });
+  // });
+};

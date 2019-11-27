@@ -31,6 +31,6 @@ const PostSchema = new Schema({
 });
 
 PostSchema.virtual("url").get(function() {
-  return "/post/" + this.type + "/" + this._id;
+  return "/posts/" + this.type + "/" + this._id;
 });
 module.exports = mongoose.model("Post", PostSchema, "Post");

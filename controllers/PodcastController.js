@@ -81,14 +81,6 @@ exports.deleteById = (req, res, next) => {
 exports.updateOne = (req, res, next) => {
   const { _id } = req.params;
   console.log(_id);
-  // let newPost = new Podcast({
-  //   title: req.body.title,
-  //   description: req.body.description,
-  //   transcript: req.body.transcript,
-  //   //postedBy: req.decoded.userId,
-  //   audio: req.files.audio ? req.files.audio[0].path : null,
-  //   image: req.files.image ? req.files.image[0].path : null
-  // });
   console.log(req.body);
   let podcast = { ...req.body };
   if (req.files.image) {
