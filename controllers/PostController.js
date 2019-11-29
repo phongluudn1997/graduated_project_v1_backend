@@ -2,12 +2,13 @@ const Post = require("../models/Post");
 
 exports.uploadPost = async (req, res, next) => {
   console.log(req.body);
+  console.log(req.file);
   let newPost = new Post({
     type: req.body.type,
     title: req.body.title,
     body: req.body.body,
     postedBy: req.decoded.userId,
-    image: req.files ? req.files.image[0].path : null
+    image: req.file ? req.file.path : null
   });
 
   newPost.save(err => {
@@ -24,8 +25,13 @@ exports.uploadPost = async (req, res, next) => {
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const resp = await Post.find().populate("postedBy");
+    const type = req.query.type;
+    console.log(type);
+    const resp = await Post.find(type ? { type } : null).populate("postedBy");
+    const total = await Post.countDocuments(type ? { type } : null);
+    console.log(total);
     res.status(200).json({
+      total,
       docs: resp
     });
   } catch (error) {
