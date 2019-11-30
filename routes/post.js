@@ -19,5 +19,5 @@ router.get("/", PostController.getPosts);
 router.get("/:type/latest", PostController.getLatest);
 router.get("/:id", PostController.getPost);
 router.delete("/:_id", PostController.deleteById);
-
+router.patch("/:_id", upload.single("image"), PostController.updateOne);
 module.exports = router;

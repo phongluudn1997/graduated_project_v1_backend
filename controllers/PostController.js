@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const message = require("../constants/message");
 
 exports.uploadPost = async (req, res, next) => {
   console.log(req.body);
@@ -26,10 +27,8 @@ exports.uploadPost = async (req, res, next) => {
 exports.getPosts = async (req, res, next) => {
   try {
     const type = req.query.type;
-    console.log(type);
     const resp = await Post.find(type ? { type } : null).populate("postedBy");
     const total = await Post.countDocuments(type ? { type } : null);
-    console.log(total);
     res.status(200).json({
       total,
       docs: resp
@@ -63,31 +62,53 @@ exports.getLatest = (req, res, next) => {
     });
 };
 
-exports.getPost = (req, res, next) => {
+exports.getPost = async (req, res, next) => {
   const { id } = req.params;
 
-  Post.findOne({ _id: id }, (err, doc) => {
-    if (err) next(err);
-    else {
-      return res.json({
+  try {
+    const doc = await Post.findById(id).populate("postedBy");
+    if (!doc) {
+      const error = new Error();
+      error.status = 404;
+      error.message = message.NOT_FOUND;
+      next(error);
+    } else {
+      return res.status(200).json({
         doc
       });
     }
-  });
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.updateOne = (req, res, next) => {
   const { _id } = req.params;
-  console.log(_id);
-  console.log(req.body);
   let post = { ...req.body };
-  if (req.files.image) {
-    post = { ...post, image: req.files.image[0].path };
+  if (req.file.image) {
+    post = { ...post, image: req.file.path };
   }
-  console.log(post);
   Post.findByIdAndUpdate(_id, post, (err, doc) => {
     if (err) next(err);
-    return res.json({ message: "Successfully", doc });
+    else {
+      if (!doc) {
+        let error = new Error();
+        error.status = 404;
+        error.message = message.NOT_FOUND;
+        next(error);
+      } else {
+        return res.status(200).json({
+          message: message.UPDATE_SUCCESSFULLY,
+          doc
+        });
+      }
+    }
+    // if ((doc = null)) {
+    //   let error = new Error();
+    //   error.status = 404;
+    //   error.message = message.NOT_FOUND;
+    //   next(error);
+    // } else return res.json({ message: "Successfully", doc });
   });
 };
 
