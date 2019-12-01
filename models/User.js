@@ -17,14 +17,15 @@ const User = new Schema({
   role: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Role",
-    default: mongoose.Types.ObjectId("5dde0a0f1a9feb4ec9be53d8")
+    required: true
   },
   active: {
     type: Boolean,
     default: true
   },
   avatar: {
-    type: String
+    type: String,
+    default: "uploads/avatar_default.png"
   }
 });
 

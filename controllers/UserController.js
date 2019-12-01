@@ -65,7 +65,9 @@ exports.UserRegister = (req, res, next) => {
                 email: req.body.email,
                 password: hash,
                 name: req.body.name,
-                role: mongoose.Types.ObjectId(req.body.role)
+                role: req.body.role
+                  ? mongoose.Types.ObjectId(req.body.role)
+                  : mongoose.Types.ObjectId("5dde0a0f1a9feb4ec9be53d8")
               });
               newUser.save((err, newUser) => {
                 if (err) next(err);
@@ -90,23 +92,22 @@ exports.UpdateUser = (req, res, next) => {
   if (req.file) {
     user = { ...user, avatar: req.file.path };
   }
-  console.log(req.body);
-  // User.findByIdAndUpdate(_id, user, (err, doc) => {
-  //   if (err) next(err);
-  //   else {
-  //     if (!doc) {
-  //       let error = new Error();
-  //       error.status = 404;
-  //       error.message = message.NOT_FOUND;
-  //       next(error);
-  //     } else {
-  //       return res.status(200).json({
-  //         message: message.UPDATE_SUCCESSFULLY,
-  //         user: doc
-  //       });
-  //     }
-  //   }
-  // });
+  User.findByIdAndUpdate(_id, user, (err, doc) => {
+    if (err) next(err);
+    else {
+      if (!doc) {
+        let error = new Error();
+        error.status = 404;
+        error.message = message.NOT_FOUND;
+        next(error);
+      } else {
+        return res.status(200).json({
+          message: message.UPDATE_SUCCESSFULLY,
+          user: doc
+        });
+      }
+    }
+  });
 };
 
 exports.GetAllUsers = async (req, res, next) => {
@@ -120,11 +121,6 @@ exports.GetAllUsers = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  // User.find().then(doc => {
-  //   res.status(200).json({
-  //     users: doc
-  //   });
-  // });
 };
 
 exports.ToggleActivateUser = async (req, res, next) => {
@@ -161,6 +157,35 @@ exports.getUserById = async (req, res, next) => {
         user
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getOwnProfile = async (req, res, next) => {
+  const _id = req.decoded.userId;
+  try {
+    const user = await User.findById(_id, "name email address avatar");
+    return res.status(200).json({
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateOwnProfile = async (req, res, next) => {
+  const _id = req.decoded.userId;
+  let user = req.body;
+  if (req.file) {
+    user = { avatar: req.file.path, ...user };
+  }
+  try {
+    const userUpdated = await User.findByIdAndUpdate(_id, user);
+    return res.status(200).json({
+      message: message.UPDATE_SUCCESSFULLY,
+      user: userUpdated
+    });
   } catch (error) {
     next(error);
   }

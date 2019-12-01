@@ -85,7 +85,7 @@ exports.getPost = async (req, res, next) => {
 exports.updateOne = (req, res, next) => {
   const { _id } = req.params;
   let post = { ...req.body };
-  if (req.file.image) {
+  if (req.file) {
     post = { ...post, image: req.file.path };
   }
   Post.findByIdAndUpdate(_id, post, (err, doc) => {
@@ -103,12 +103,6 @@ exports.updateOne = (req, res, next) => {
         });
       }
     }
-    // if ((doc = null)) {
-    //   let error = new Error();
-    //   error.status = 404;
-    //   error.message = message.NOT_FOUND;
-    //   next(error);
-    // } else return res.json({ message: "Successfully", doc });
   });
 };
 
