@@ -22,6 +22,9 @@ const User = new Schema({
   active: {
     type: Boolean,
     default: true
+  },
+  avatar: {
+    type: String
   }
 });
 

@@ -33,7 +33,8 @@ exports.UserLogin = (req, res, next) => {
               jwt_constant.JWT_SECRET_KEY
             );
             res.status(200).json({
-              token
+              token,
+              user
             });
           }
         });
@@ -84,21 +85,28 @@ exports.UserRegister = (req, res, next) => {
 };
 
 exports.UpdateUser = (req, res, next) => {
-  User.findOneAndUpdate(
-    { _id: req.decoded.userId },
-    {
-      email: req.body.email,
-      name: req.body.name
-    },
-    { new: true, useFindAndModify: false }
-  )
-    .exec()
-    .then(doc =>
-      res.status(200).json({
-        doc
-      })
-    )
-    .catch(err => next(err));
+  const { _id } = req.params;
+  let user = { ...req.body };
+  if (req.file) {
+    user = { ...user, avatar: req.file.path };
+  }
+  console.log(req.body);
+  // User.findByIdAndUpdate(_id, user, (err, doc) => {
+  //   if (err) next(err);
+  //   else {
+  //     if (!doc) {
+  //       let error = new Error();
+  //       error.status = 404;
+  //       error.message = message.NOT_FOUND;
+  //       next(error);
+  //     } else {
+  //       return res.status(200).json({
+  //         message: message.UPDATE_SUCCESSFULLY,
+  //         user: doc
+  //       });
+  //     }
+  //   }
+  // });
 };
 
 exports.GetAllUsers = async (req, res, next) => {
@@ -133,6 +141,24 @@ exports.ToggleActivateUser = async (req, res, next) => {
       return res.status(200).json({
         message: "Change successfully",
         user: newUser
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getUserById = async (req, res, next) => {
+  const { _id } = req.params;
+  try {
+    const user = await User.findById(_id).populate("role");
+    if (!user) {
+      return res.status(404).json({
+        message: "Not Found"
+      });
+    } else {
+      return res.status(200).json({
+        user
       });
     }
   } catch (error) {
