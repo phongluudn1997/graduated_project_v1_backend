@@ -5,3 +5,4 @@ exports.TOKEN_FAIL = "There is no token, please try again";
 exports.IN_ACTIVE = "Your account had been set to inactive.";
 exports.NOT_FOUND = "Not found document";
 exports.UPDATE_SUCCESSFULLY = "Update document successfully";
+exports.CREATE_SUCCESSFULLY = "Create document successfully";

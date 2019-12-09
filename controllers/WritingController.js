@@ -1,3 +1,4 @@
+const message = require("../constants/message");
 const Writing = require("../models/WritingService");
 
 exports.createWriting = async (req, res, next) => {
@@ -10,6 +11,7 @@ exports.createWriting = async (req, res, next) => {
   try {
     const resp = await doc.save();
     return res.status(200).json({
+      message: message.CREATE_SUCCESSFULLY,
       data: resp
     });
   } catch (error) {
@@ -30,7 +32,7 @@ exports.getAll = async (req, res, next) => {
 
 exports.getById = async (req, res, next) => {
   try {
-    const resp = await Writing.findById(req.params._id);
+    const resp = await Writing.findById(req.params._id).populate("postedBy");
     return res.status(200).json({
       data: resp
     });
@@ -48,6 +50,19 @@ exports.checkWriting = async (req, res, next) => {
     const data = await Writing.findByIdAndUpdate(req.params._id, writing, {
       useFindAndModify: false
     });
+    return res.status(200).json({
+      data
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAllByMe = async (req, res, next) => {
+  try {
+    const data = await Writing.find({ postedBy: req.decoded.userId }).populate(
+      "checkedBy"
+    );
     return res.status(200).json({
       data
     });

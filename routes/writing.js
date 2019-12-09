@@ -19,8 +19,8 @@ router.post(
   WritingController.createWriting
 );
 
+router.get("/myWritings", checkToken, WritingController.getAllByMe);
 router.get("/", WritingController.getAll);
 router.get("/:_id", WritingController.getById);
 router.patch("/:_id", checkToken, WritingController.checkWriting);
-
 module.exports = router;
