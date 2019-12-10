@@ -21,7 +21,7 @@ exports.createWriting = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const resp = await Writing.find();
+    const resp = await Writing.find().populate(["postedBy", "checkedBy"]);
     return res.status(200).json({
       data: resp
     });
@@ -42,6 +42,12 @@ exports.getById = async (req, res, next) => {
 };
 
 exports.checkWriting = async (req, res, next) => {
+  console.log(req.body);
+  if (!req.body["responsePost"]) {
+    return res.status(404).json({
+      message: "No response"
+    });
+  }
   let writing = { ...req.body };
   writing.checkedBy = req.decoded.userId;
   writing.status = "Done";
