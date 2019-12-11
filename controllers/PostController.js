@@ -1,5 +1,6 @@
 const Post = require("../models/Post");
 const message = require("../constants/message");
+const Comment = require("../models/Comment");
 
 exports.uploadPost = async (req, res, next) => {
   console.log(req.body);
@@ -67,6 +68,7 @@ exports.getPost = async (req, res, next) => {
 
   try {
     const doc = await Post.findById(id).populate("postedBy");
+    const comments = await Comment.find({ postId: id }).populate("postedBy");
     if (!doc) {
       const error = new Error();
       error.status = 404;
@@ -74,7 +76,8 @@ exports.getPost = async (req, res, next) => {
       next(error);
     } else {
       return res.status(200).json({
-        doc
+        doc,
+        comments
       });
     }
   } catch (error) {
@@ -115,4 +118,20 @@ exports.deleteById = (req, res, next) => {
         message: "Delete successfully"
       });
   });
+};
+
+exports.postComment = async (req, res, next) => {
+  const comment = new Comment({
+    ...req.body,
+    postedBy: req.decoded.userId
+  });
+  try {
+    const data = await comment.save();
+    return res.status(200).json({
+      message: message.POST_COMMENT_SUCCESSFULLY,
+      data
+    });
+  } catch (error) {
+    next(error);
+  }
 };

@@ -7,7 +7,7 @@ const WritingServiceSchema = mongoose.Schema({
   },
   postedAt: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   question: {
     type: String
