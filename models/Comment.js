@@ -17,12 +17,8 @@ const CommentSchema = mongoose.Schema({
   },
   dateTime: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   }
-  // replyToComment: {
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: 'Comment'
-  // }
 });
 
 module.exports = mongoose.model("Comment", CommentSchema, "Comment");
