@@ -91,6 +91,7 @@ exports.updateOne = (req, res, next) => {
   if (req.file) {
     post = { ...post, image: req.file.path };
   }
+  console.log("day ne", post);
   Post.findByIdAndUpdate(_id, post, (err, doc) => {
     if (err) next(err);
     else {
